@@ -17,27 +17,32 @@ FORBIDDEN_WORDS = [
 ]
 
 class ProductForm(forms.ModelForm):
+    FORBIDDEN_WORDS = [
+        'казино', 'криптовалюта', 'крипта', 'биржа',
+        'дешево', 'бесплатно', 'обман', 'полиция', 'радар',
+    ]
+
     class Meta:
         model = Product
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field in self.fields.values():
+        for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
 
     def clean_name(self):
         name = self.cleaned_data.get('name', '')
-        for word in FORBIDDEN_WORDS:
+        for word in self.FORBIDDEN_WORDS:
             if word.lower() in name.lower():
-                raise ValidationError(f'Название содержит запрещённое слово: "{word}"')
+                raise ValidationError(f'Запрещённое слово в названии: "{word}"')
         return name
 
     def clean_description(self):
         description = self.cleaned_data.get('description', '')
-        for word in FORBIDDEN_WORDS:
+        for word in self.FORBIDDEN_WORDS:
             if word.lower() in description.lower():
-                raise ValidationError(f'Описание содержит запрещённое слово: "{word}"')
+                raise ValidationError(f'Запрещённое слово в описании: "{word}"')
         return description
 
     def clean_price(self):

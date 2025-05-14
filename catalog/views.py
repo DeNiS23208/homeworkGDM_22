@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product
 from .forms import ProductForm
 
+
 def product_list(request):
     products = Product.objects.all()
     return render(request, 'catalog/product_list.html', {'products': products})
@@ -16,7 +17,7 @@ def product_detail(request, pk):
 
 def product_create(request):
     if request.method == 'POST':
-        form = ProductForm(request.POST)
+        form = ProductForm(request.POST, request.FILES)  # ← обязательно .FILES
         if form.is_valid():
             form.save()
             return redirect('catalog:product_list')
@@ -28,7 +29,7 @@ def product_create(request):
 def product_update(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
-        form = ProductForm(request.POST, instance=product)
+        form = ProductForm(request.POST, request.FILES, instance=product)  # ← обязательно .FILES
         if form.is_valid():
             form.save()
             return redirect('catalog:product_detail', pk=product.pk)

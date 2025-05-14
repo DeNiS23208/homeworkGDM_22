@@ -3,11 +3,49 @@
 {% block title %}Форма продукта{% endblock %}
 
 {% block content %}
-  <h2>Форма продукта</h2>
-  <form method="post">
+  <h2 class="mb-4">Форма продукта</h2>
+
+  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+
+    <div class="mb-3">
+      {{ form.name.label_tag }}
+      {{ form.name }}
+      {{ form.name.errors }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.description.label_tag }}
+      {{ form.description }}
+      {{ form.description.errors }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.price.label_tag }}
+      {{ form.price }}
+      {{ form.price.errors }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.category.label_tag }}
+      {{ form.category }}
+      {{ form.category.errors }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.image.label_tag }}
+      {{ form.image }}
+      {{ form.image.errors }}
+    </div>
+
+    {% if form.instance.pk and form.instance.image %}
+      <div class="mb-3">
+        <p>Текущее изображение:</p>
+        <img src="{{ form.instance.image.url }}" alt="Изображение" class="img-thumbnail" style="max-width: 200px;">
+      </div>
+    {% endif %}
+
     <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a href="{% url 'catalog:product_list' %}" class="btn btn-link">Назад</a>
   </form>
-  <a href="{% url 'catalog:product_list' %}" class="btn btn-link">Назад</a>
 {% endblock %}
