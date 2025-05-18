@@ -1,11 +1,11 @@
-from http.client import responses
-
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.core.mail import send_mail
 
 from .models import CustomUser
 from .forms import CustomUserCreationForm
+from django.contrib.auth.views import LoginView
+from .forms import CustomLoginForm
 
 
 class RegisterView(CreateView):
@@ -24,3 +24,8 @@ class RegisterView(CreateView):
             fail_silently=True,
         )
         return response
+
+
+class UserLoginView(LoginView):
+    form_class = CustomLoginForm
+    template_name = 'users/login.html'

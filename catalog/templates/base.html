@@ -1,20 +1,46 @@
 {% load static %}
-
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Мой магазин{% endblock %}</title>
-    
-    <!-- Локальный Bootstrap -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Сайт студентов{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'catalog/css/bootstrap.min.css' %}">
 </head>
 <body>
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
 
-    <!-- Локальный JS Bootstrap -->
-    <script src="{% static 'catalog/js/bootstrap.bundle.min.js' %}"></script>
+<nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
+    <a class="navbar-brand" href="{% url 'catalog:product_list' %}">Сайт студентов</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <form method="post" action="{% url 'users:logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-link nav-link" style="padding: 0; border: none; background: none;">
+                            Выход
+                        </button>
+                    </form>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'users:login' %}">Вход</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'users:register' %}">Регистрация</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+{% block content %}{% endblock %}
+
+<script src="{% static 'catalog/js/bootstrap.bundle.min.js' %}"></script>
 </body>
 </html>
