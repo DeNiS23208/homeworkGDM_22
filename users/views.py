@@ -1,3 +1,5 @@
+from email.message import EmailMessage
+from django.core.mail import EmailMessage
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.core.mail import send_mail
@@ -16,13 +18,14 @@ class RegisterView(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        send_mail(
-            'Добро пожаловать!',
-            f'Привет, {self.object.email}! Спасибо за регистрацию.',
-            'noreply@example.com',
-            [self.object.email],
-            fail_silently=True,
+
+
+        email = EmailMessage(
+            subject="Добро пожаловать!",
+            body=f"Привет, {self.object.email}! Спасибо за регистрацию.",
+            to=[self.object.email]
         )
+        email.send(fail_silently=False)
         return response
 
 
