@@ -1,9 +1,19 @@
+from idlelib.debugobj import dispatch
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseForbidden
 from django.contrib.auth.models import Group
 from .models import Product
 from .forms import ProductForm
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from .services.product_services import get_products_by_category
+
+
+def products_by_category(request, category_id):
+    products = get_products_by_category(category_id)
+    return render(request, 'catalog/products_by_category.html', {'products': products})
 
 
 def product_list(request):
@@ -11,6 +21,7 @@ def product_list(request):
     return render(request, 'catalog/product_list.html', {'products': products})
 
 
+@cache_page(60 * 15)
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     return render(request, 'catalog/product_detail.html', {'product': product})
@@ -59,7 +70,6 @@ def product_delete(request, pk):
         product.delete()
         return redirect('catalog:product_list')
     return render(request, 'catalog/product_confirm_delete.html', {'product': product})
-
 
 
 @login_required(login_url='users:login')
