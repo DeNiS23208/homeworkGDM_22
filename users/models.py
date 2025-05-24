@@ -8,8 +8,8 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=20, blank=True)
     country = models.CharField(max_length=100, blank=True)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
 
     def __str__(self):
-        return self.email
+        return self.username

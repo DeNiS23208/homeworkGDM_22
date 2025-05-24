@@ -4,17 +4,30 @@
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
-  <h1>{{ product.name }}</h1>
+<h1>{{ product.name }}</h1>
 
-  {% if product.image %}
-    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid mb-3" style="max-width: 300px;">
-  {% endif %}
+{% if product.image %}
+<img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid mb-3" style="max-width: 300px;">
+{% endif %}
 
-  <p><strong>Описание:</strong> {{ product.description }}</p>
-  <p><strong>Цена:</strong> {{ product.price }} ₽</p>
-  <p><strong>Категория:</strong> {{ product.category.name }}</p>
+<p><strong>Описание:</strong> {{ product.description }}</p>
+<p><strong>Цена:</strong> {{ product.price }} ₽</p>
+<p><strong>Категория:</strong> {{ product.category.name }}</p>
+<p><strong>Опубликован:</strong> {{ product.is_published|yesno:"Да,Нет" }}</p>
 
-  <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-warning">Редактировать</a>
-  <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">Удалить</a>
-  <a href="{% url 'catalog:product_list' %}" class="btn btn-link">Назад к списку</a>
+
+{% if user == product.owner %}
+<a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-warning">✏️ Редактировать</a>
+<a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">❌ Удалить</a>
+{% endif %}
+
+
+{% if perms.catalog.can_unpublish_product %}
+<form action="{% url 'catalog:product_unpublish' product.pk %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-secondary">📤 Снять с публикации</button>
+</form>
+{% endif %}
+
+<a href="{% url 'catalog:product_list' %}" class="btn btn-link">⬅️ Назад к списку</a>
 {% endblock %}
